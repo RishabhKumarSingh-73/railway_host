@@ -14,7 +14,12 @@ def hello_world():
 @app.get("/memory")
 async def memory_assessment_endpoint():
     response = await memory_assessment()
-    print(response)
+    data_dict = json.loads(response)
+    return data_dict
+
+@app.get("/logical")
+async def logical_assessment_endpoint():
+    response = await memory_assessment()
     data_dict = json.loads(response)
     return data_dict
 
