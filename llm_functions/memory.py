@@ -1,17 +1,20 @@
 import os
 from openai import OpenAI
 
-async def memory_assessment(client)->str:
-    
+model = "mistral-large-latest"
 
-    completion = client.chat.completions.create(
-    extra_headers={},
-    extra_body={},
-    model="deepseek/deepseek-chat:free",
-    messages=[
+async def memory_assessment(client):
+
+    chat_response = client.chat.complete(
+    model = model,
+    messages = [
         {
-        "role": "user",
-        "content": """Generate a paragraph of approximately 100 words that contains enough information to create six MCQs, such that these 6 MCQs will be asked from the generated paragraph.
+            "role":"system",
+            "content":"you are a questions generator. Generate quality questions that satisfies the user prompt."
+        },
+        {
+            "role": "user",
+            "content": """Generate a paragraph of approximately 100 words that contains enough information to create six MCQs, such that these 6 MCQs will be asked from the generated paragraph.
 
                         The paragraph should contain facts, events, and relationships that can be recalled directly or with slight inference.
 
@@ -45,20 +48,23 @@ async def memory_assessment(client)->str:
 
                         
 
-                        """
-        }
+                        """,
+        },
     ]
     )
-    return completion.choices[0].message.content
+
+    return chat_response.choices[0].message.content
 
 
 async def logical_assessment(client)->str:
     
-    completion = client.chat.completions.create(
-    extra_headers={},
-    extra_body={},
-    model="deepseek/deepseek-chat:free",
-    messages=[
+    chat_response = client.chat.complete(
+    model = model,
+    messages = [
+        {
+            "role":"system",
+            "content":"you are a questions generator. Generate quality questions that satisfies the user prompt."
+        },
         {
         "role": "user",
         "content": """Generate 3 easy, 3 medium, and 3 hard logical/analytical questions in the form of multiple-choice questions, all of them shuffled with no sub topics as easy, hard, medium . Each question should have 4 answer choices, one correct answer, and a difficulty level. the difficulty level should be numbers 1 for easy, 3 for medium, 5 for hard. and correct answer should have only the option a,b,c or d not the whole answer. 
@@ -81,24 +87,22 @@ async def logical_assessment(client)->str:
                             }}
                         ]
                     }}
-                    
-                    
-
-
                         """
-        }
-    ],
-    temperature = 1.0
+        },
+    ]
     )
-    return completion.choices[0].message.content
+
+    return chat_response.choices[0].message.content
 
 async def comprehension_assessment(client)->str:
     
-    completion = client.chat.completions.create(
-    extra_headers={},
-    extra_body={},
-    model="deepseek/deepseek-chat:free",
-    messages=[
+    chat_response = client.chat.complete(
+    model = model,
+    messages = [
+        {
+            "role":"system",
+            "content":"you are a questions generator. Generate quality questions that satisfies the user prompt."
+        },
         {
         "role": "user",
         "content": """Generate a paragraph of approximately 100 words that contains enough information to create six MCQs, such that these 6 MCQs will be asked from the generated paragraph.
@@ -134,19 +138,21 @@ async def comprehension_assessment(client)->str:
 
 
                     """
-        }
-    ],
-    temperature = 1.0
+        },
+    ]
     )
-    return completion.choices[0].message.content
+
+    return chat_response.choices[0].message.content
 
 async def topic_assessment(client,topic)->str:
     
-    completion = client.chat.completions.create(
-    extra_headers={},
-    extra_body={},
-    model="deepseek/deepseek-chat:free",
-    messages=[
+    chat_response = client.chat.complete(
+    model = model,
+    messages = [
+        {
+            "role":"system",
+            "content":"you are a questions generator. Generate quality questions that satisfies the user prompt."
+        },
         {
         "role": "user",
         "content": f"""Generate 3 easy, 3 medium, and 3 hard multiple-choice questions, all of them shuffled with no sub topics as easy, hard, medium  on the topic "{topic}". Each question should have 4 answer choices, one correct answer, and a difficulty level. the difficulty level should be numbers 1 for easy, 3 for medium, 5 for hard. and correct answer should have only the option a,b,c or d not the whole answer. 
@@ -173,8 +179,9 @@ async def topic_assessment(client,topic)->str:
 
 
                     """
-        }
-    ],
-    temperature = 1.0
+        },
+    ]
     )
-    return completion.choices[0].message.content
+
+    return chat_response.choices[0].message.content
+
