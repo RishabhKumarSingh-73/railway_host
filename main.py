@@ -4,9 +4,20 @@ import re
 from fastapi import FastAPI
 import uvicorn
 from mistralai import Mistral
+from fastapi.middleware.cors import CORSMiddleware
+
 from llm_functions.memory import memory_assessment,logical_assessment,comprehension_assessment,topic_assessment 
 
 app = FastAPI()
+
+# Configure CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods (GET, POST, PUT, DELETE, etc.)
+    allow_headers=["*"],  # Allows all headers
+)
 
 mistral_api_key = os.getenv("MISTRAL_API_KEY")
 
