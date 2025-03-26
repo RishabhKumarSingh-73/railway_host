@@ -60,7 +60,7 @@ async def getting_mindmap(subject:str):
     return data_dict
 
 
-@app.post("/notes/")
+@app.get("/notes/")
 def generate_document(topic: str=Query(...),subject:str=Query(...)):
     try:
         # Generate text
