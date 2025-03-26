@@ -6,7 +6,8 @@ import uvicorn
 from mistralai import Mistral
 from fastapi.middleware.cors import CORSMiddleware
 
-from llm_functions.memory import memory_assessment,logical_assessment,comprehension_assessment,topic_assessment 
+from llm_functions.memory import memory_assessment,logical_assessment,comprehension_assessment,topic_assessment
+from mindmap import get_mindmap 
 
 app = FastAPI()
 
@@ -51,6 +52,11 @@ async def comprehension_assessment_endpoint(topic:str):
     data_dict = json.loads(extract_json(response))
     return data_dict
 
+@app.get("/mindmap/{subject}")
+async def getting_mindmap(subject:str):
+    response = await get_mindmap(MistralClient,subject)
+    data_dict = json.loads(extract_json(response))
+    return data_dict
 
 
 
