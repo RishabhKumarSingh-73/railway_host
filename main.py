@@ -1,11 +1,12 @@
 import json
 import os
 import re
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Query
 import uvicorn
 from mistralai import Mistral
 from fastapi.middleware.cors import CORSMiddleware
 
+from AI_genNotes import create_txt, generate_notes, upload_to_cloudinary
 from llm_functions.memory import memory_assessment,logical_assessment,comprehension_assessment,topic_assessment
 from mindmap import get_mindmap 
 
@@ -57,6 +58,24 @@ async def getting_mindmap(subject:str):
     response = await get_mindmap(MistralClient,subject)
     data_dict = json.loads(extract_json(response))
     return data_dict
+
+
+@app.post("/notes/")
+def generate_document(topic: str=Query(...),subject:str=Query(...)):
+    try:
+        # Generate text
+        content = generate_notes(MistralClient,topic,subject)
+        
+        # Create TXT file
+        file_path = create_txt(content)
+        
+        # Upload DOCX to Cloudinary
+        doc_url = upload_to_cloudinary(file_path)
+        
+        return {"document_url": doc_url}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 
