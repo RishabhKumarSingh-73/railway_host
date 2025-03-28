@@ -35,8 +35,6 @@ The over all notes should be of 2000-2500 words.
  
 ## 8. Formulas (If Applicable)  
 
-9.FAQs
-
 ## 10. Subtopics  
 
 ### [Subtopic Name]  

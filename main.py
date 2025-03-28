@@ -84,7 +84,7 @@ def generate_document(topic: str=Query(...),subject:str=Query(...)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-@app.get('/roadmap')
+@app.post('/roadmap')
 async def get_roadmap_endpoint(request:RoadmapModel):
     response = await get_roadmap(MistralClient,request.lessons)
     data_dict = json.loads(extract_json(response))
