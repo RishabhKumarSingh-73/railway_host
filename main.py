@@ -5,10 +5,14 @@ from fastapi import FastAPI, HTTPException, Query
 import uvicorn
 from mistralai import Mistral
 from fastapi.middleware.cors import CORSMiddleware
+from typing import List
 
 from AI_genNotes import create_txt, generate_notes, upload_to_cloudinary
 from llm_functions.memory import memory_assessment,logical_assessment,comprehension_assessment,topic_assessment
 from mindmap import get_mindmap 
+from pydantic import BaseModel
+
+from roadmap import get_roadmap
 
 app = FastAPI()
 
@@ -20,6 +24,9 @@ app.add_middleware(
     allow_methods=["*"],  # Allows all methods (GET, POST, PUT, DELETE, etc.)
     allow_headers=["*"],  # Allows all headers
 )
+
+class RoadmapModel(BaseModel):
+    lessons : List[str]
 
 mistral_api_key = os.getenv("MISTRAL_API_KEY")
 
@@ -76,6 +83,12 @@ def generate_document(topic: str=Query(...),subject:str=Query(...)):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+@app.get('/roadmap')
+async def get_roadmap_endpoint(request:RoadmapModel):
+    response = await get_roadmap(MistralClient,request.lessons)
+    data_dict = json.loads(extract_json(response))
+    return data_dict 
 
 
 
